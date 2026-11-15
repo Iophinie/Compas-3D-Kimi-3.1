@@ -16,7 +16,7 @@
 Склонируйте репозиторий:
 
 ```powershell
-git clone <URL-репозитория> kompas-chat
+git clone https://github.com/Iophinie/Compas-3D-Kimi-3.1.git kompas-chat
 cd kompas-chat
 ```
 

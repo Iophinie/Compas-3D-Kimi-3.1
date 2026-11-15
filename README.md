@@ -4,6 +4,8 @@
 по текстовому описанию через MCP-мост к API КОМПАС, проверяет модель, сохраняет
 `.m3d` и показывает скриншот.
 
+Репозиторий: [github.com/Iophinie/Compas-3D-Kimi-3.1](https://github.com/Iophinie/Compas-3D-Kimi-3.1)
+
 ![Панель Kimi в КОМПАС-3D](docs/screenshot.png)
 
 ## Что проверено
