@@ -1,0 +1,14 @@
+.venv/
+.uv-cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.data/
+config.json
+instance.json
+*.log
+*.bmp
+.scratch/
+.env
+secrets.json

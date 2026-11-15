@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kimi — КОМПАС</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="titlebar" class="titlebar">
+      <div class="brand" id="dragzone">
+        <div class="logo">K</div>
+        <div class="brandtext">
+          <div class="brandrow"><strong>Kimi</strong><span class="badge">K3.1</span></div>
+          <div class="sub">КОМПАС-3D · панель</div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="status" id="status" title="Состояние">
+          <span class="dot" id="mcp-dot"></span>
+          <span id="mcp-label">MCP</span>
+        </div>
+        <button class="icon" id="btn-new" title="Новый диалог">＋</button>
+        <button class="icon" id="btn-settings" title="Настройки">⚙</button>
+        <button class="icon" id="btn-close" title="Закрыть">✕</button>
+      </div>
+    </header>
+
+    <main id="messages" class="messages">
+      <section id="welcome" class="welcome">
+        <div class="welcome-logo">K</div>
+        <h1>Kimi для КОМПАС-3D</h1>
+        <p class="welcome-sub">Опишите деталь — соберу её в КОМПАСе, проверю и сохраню.</p>
+        <div class="examples" id="examples">
+          <button class="example" data-prompt="Построй пластину 120×80×8 мм с четырьмя сквозными отверстиями Ø6 мм, центры в 12 мм от краёв. Сохрани и покажи.">
+            <span class="ex-title">Пластина</span>
+            <span class="ex-text">120×80×8, 4 отверстия Ø6</span>
+          </button>
+          <button class="example" data-prompt="Построй втулку: наружный диаметр 40 мм, внутренний 20 мм, длина 30 мм, фаска 1 мм по наружным кромкам. Сохрани и покажи.">
+            <span class="ex-title">Втулка</span>
+            <span class="ex-text">Ø40/Ø20 × 30, фаска 1</span>
+          </button>
+          <button class="example" data-prompt="Построй фланец: диск Ø80 мм толщиной 10 мм, центральное отверстие Ø30 мм, шесть отверстий Ø8 мм на окружности Ø60 мм. Сохрани и покажи.">
+            <span class="ex-title">Фланец</span>
+            <span class="ex-text">Ø80×10, 6×Ø8 на Ø60</span>
+          </button>
+        </div>
+        <div class="welcome-note" id="welcome-note"></div>
+      </section>
+    </main>
+
+    <footer class="composer">
+      <div class="composer-box">
+        <textarea id="input" rows="1" placeholder="Опишите деталь, размеры и что сохранить…"></textarea>
+        <div class="composer-actions">
+          <button class="send" id="btn-send" title="Отправить (Enter)">↑</button>
+          <button class="stop hidden" id="btn-stop" title="Остановить">■</button>
+        </div>
+      </div>
+      <div class="footline">
+        <span id="foot-model">k3.1-pro</span>
+        <span class="sep">·</span>
+        <span id="foot-hint">Enter — отправить, Shift+Enter — перенос</span>
+        <span class="spacer"></span>
+        <span id="foot-tokens"></span>
+      </div>
+    </footer>
+
+    <div id="settings" class="overlay hidden">
+      <div class="sheet">
+        <div class="sheet-head">
+          <h2>Настройки</h2>
+          <button class="icon" id="btn-settings-close">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div class="auth-card" id="auth-card">
+            <div class="auth-info">
+              <span class="dot" id="oauth-dot"></span>
+              <div>
+                <div class="auth-title">Kimi Code</div>
+                <div class="auth-sub" id="oauth-status">не подключён</div>
+              </div>
+            </div>
+            <div class="auth-actions">
+              <button class="ghost auth-btn" id="btn-oauth">Войти</button>
+              <button class="link hidden" id="btn-oauth-out">выйти</button>
+            </div>
+          </div>
+          <div class="auth-hint">Можно использовать API-ключ или вход через Kimi Code — что удобнее.</div>
+          <label class="field">
+            <span>Ключ Kimi Code (необязательно)</span>
+            <input id="set-key" type="password" autocomplete="off" placeholder="sk-kimi-…" />
+            <small id="key-hint">Можно войти через Kimi Code выше или вставить ключ из <a href="https://www.kimi.com/code/console" target="_blank">Kimi Code Console</a>. Ключ хранится локально и шифруется Windows.</small>
+          </label>
+          <label class="field">
+            <span>Модель</span>
+            <select id="set-model">
+              <option value="k3.1-pro">K3.1 Pro · 1M контекст</option>
+              <option value="k3.1-pro-highspeed">K3.1 Pro Highspeed</option>
+              <option value="k3">K3</option>
+              <option value="kimi-for-coding">Kimi for Coding</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Base URL</span>
+            <input id="set-base" type="text" spellcheck="false" />
+          </label>
+          <label class="field">
+            <span>Набор инструментов</span>
+            <select id="set-tools">
+              <option value="core">Только моделирование (рекомендуется)</option>
+              <option value="all">Все 41 инструмент</option>
+            </select>
+          </label>
+          <div class="field">
+            <span>MCP-сервер КОМПАС</span>
+            <div class="mcp-box" id="mcp-box">
+              <span class="dot" id="set-mcp-dot"></span>
+              <span id="set-mcp-text">проверка…</span>
+              <button class="link" id="btn-mcp-restart">перезапустить</button>
+            </div>
+          </div>
+          <details class="advanced">
+            <summary>Дополнительно</summary>
+            <label class="field">
+              <span>Папка сохранения</span>
+              <input id="set-savedir" type="text" spellcheck="false" />
+            </label>
+            <label class="field">
+              <span>Ширина панели, px</span>
+              <input id="set-width" type="number" min="320" max="900" step="10" />
+            </label>
+            <label class="field">
+              <span>Команда MCP</span>
+              <input id="set-mcpcmd" type="text" spellcheck="false" />
+            </label>
+            <div class="field muted small" id="config-path"></div>
+          </details>
+          <div class="sheet-actions">
+            <button class="ghost" id="btn-test">Проверить ключ</button>
+            <button class="primary" id="btn-save">Сохранить</button>
+          </div>
+          <div id="settings-msg" class="settings-msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="oauth-modal" class="overlay hidden">
+      <div class="sheet oauth-sheet">
+        <div class="sheet-head">
+          <h2>Вход через Kimi Code</h2>
+          <button class="icon" id="btn-oauth-cancel">✕</button>
+        </div>
+        <div class="sheet-body oauth-body">
+          <p class="oauth-lead">Откройте страницу Kimi и подтвердите код:</p>
+          <div class="oauth-code" id="oauth-code">••••-••••</div>
+          <a class="primary oauth-open" id="oauth-link" href="#" target="_blank">Открыть страницу Kimi</a>
+          <div class="oauth-wait" id="oauth-wait">Ожидаю подтверждения…</div>
+          <button class="ghost oauth-cancel" id="btn-oauth-cancel2">Отмена</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="lightbox" class="lightbox hidden"><img id="lightbox-img" alt="" /></div>
+  </div>
+
+  <script src="/static/vendor/marked.min.js"></script>
+  <script src="/static/vendor/purify.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
